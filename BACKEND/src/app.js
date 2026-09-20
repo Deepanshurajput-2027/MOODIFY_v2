@@ -4,6 +4,8 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './features/auth/auth.route.js';
 import songRoutes from './features/songs/song.route.js';
 import chatRoutes from './features/chat/chat.route.js';
+import historyRoutes from './features/history/history.route.js';
+import userRoutes from './features/users/user.route.js';
 
 const app = express();
 
@@ -20,6 +22,8 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/songs', songRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/history', historyRoutes);
+app.use('/api/users', userRoutes);
 
 // Base route
 app.get('/', (req, res) => {

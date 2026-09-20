@@ -1,4 +1,5 @@
 import ai from '../../config/gemini.js';
+import { logUserActivity } from '../history/history.service.js';
 
 export const streamChat = async (req, res) => {
   try {
@@ -30,12 +31,16 @@ The tone you should adopt is: ${requestedTone || 'friendly and supportive'}.`;
       }
     });
 
+    let finalChatbotText = '';
+
     for await (const chunk of responseStream) {
       if (chunk.text) {
+        finalChatbotText += chunk.text;
         res.write(chunk.text);
       }
     }
 
+    logUserActivity(req.user._id, 'chat', { details: { input: history, response: finalChatbotText } });
     res.end();
   } catch (error) {
     console.error('Error in streamChat controller: ', error.message);

@@ -1,5 +1,6 @@
 import Song from './song.model.js';
 import imagekit from '../../config/imagekit.js';
+import { logUserActivity } from '../history/history.service.js';
 
 export const uploadLocalSong = async (req, res) => {
   try {
@@ -91,6 +92,7 @@ export const getSongsByMood = async (req, res) => {
     }
 
     const songs = await Song.find({ mood }).sort({ createdAt: -1 });
+    logUserActivity(req.user._id, 'scan', { mood: req.query.mood });
     res.status(200).json(songs);
   } catch (error) {
     console.log('Error in getSongsByMood controller: ', error.message);
