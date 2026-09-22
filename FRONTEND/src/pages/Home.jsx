@@ -4,7 +4,7 @@ import TrustBar from '../components/landing/TrustBar';
 import ProblemSolution from '../components/landing/ProblemSolution';
 import HowItWorks from '../components/landing/HowItWorks';
 import AIChatShowcase from '../components/landing/AIChatShowcase';
-import BentoGrid from '../components/landing/BentoGrid';
+import SpiralGallerySection from '../components/landing/SpiralGallerySection';
 import CallToAction from '../components/landing/CallToAction';
 import Footer from '../components/landing/Footer';
 
@@ -16,7 +16,7 @@ const Home = () => {
       <ProblemSolution/>
       <HowItWorks/>
       <AIChatShowcase/>
-      <BentoGrid/>
+      <SpiralGallerySection/>
       <CallToAction/>
       <Footer/>
     </div>

@@ -1,5 +1,6 @@
 import { gsap } from "gsap";
 import React, { useEffect, useRef } from "react";
+import { ScanFace } from 'lucide-react';
 
 const CrowdCanvas = ({ src, rows = 15, cols = 7 }) => {
   const canvasRef = useRef(null);
@@ -142,32 +143,46 @@ const CrowdCanvas = ({ src, rows = 15, cols = 7 }) => {
 
 const Hero = () => {
   return (
-   <section className="relative h-screen w-full bg-white overflow-hidden text-black font-sans">
+    <section className="relative h-screen w-full bg-white overflow-hidden text-black font-sans">
       
       {/* TEXT & CTA OVERLAY */}
-      <div className="absolute top-[5%] left-1/2 flex w-full -translate-x-1/2 flex-col items-center justify-center px-4 text-center z-20 pointer-events-auto">
+      <div className="absolute top-[2%] sm:top-[2%] md:top-[2%] left-1/2 flex w-full -translate-x-1/2 flex-col items-center justify-center px-4 text-center z-20 pointer-events-auto bg-gradient-to-b from-white via-white/80 to-transparent pb-12 pt-8">
         
-        <span className="relative mb-6 text-xs font-bold uppercase tracking-[0.3em] text-gray-400 after:absolute after:left-1/2 after:top-full after:mt-4 after:h-12 after:w-px after:-translate-x-1/2 after:bg-gradient-to-b after:from-gray-300 after:to-transparent">
+        <span className="relative mb-4 md:mb-6 text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] text-gray-400 after:absolute after:left-1/2 after:top-full after:mt-2 md:after:mt-4 after:h-8 md:after:h-12 after:w-px after:-translate-x-1/2 after:bg-gradient-to-b after:from-gray-300 after:to-transparent">
           Moodify V1
         </span>
         
-        <h1 className="mt-12 max-w-7xl text-3xl font-extrabold tracking-tighter text-gray-900 sm:text-4xl md:text-5xl leading-tight">
-          Say <span style={{ fontFamily: '"Syne Tactile", cursive' }}>Goodbye</span> to the Selection Overhead <br /> Let Your <span style={{ fontFamily: '"Syne Tactile", cursive' }}>Mood</span> To Flow in Words.
+        <h1 className="mt-8 md:mt-12 max-w-7xl text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter text-gray-900 leading-[1.1] md:leading-tight">
+          Say <span style={{ fontFamily: '"Syne Tactile", cursive' }}>Goodbye</span> to the Selection Overhead <br className="hidden md:block" /> 
+          Let Your <span style={{ fontFamily: '"Syne Tactile", cursive' }}>Mood</span> Flow in Words.
         </h1>
         
-        <p className="mt-2 max-w-xl text-md text-gray-500 font-medium tracking-wide">
+        <p className="mt-4 md:mt-6 max-w-xl text-base md:text-lg text-gray-500 font-medium tracking-wide px-2">
           AI-driven playback that adapts to how you feel in real-time.
         </p>
 
-        <button className="mt-10 rounded-full bg-black px-10 py-4 text-sm font-semibold uppercase tracking-widest text-white shadow-2xl transition-all duration-300 hover:bg-gray-800 hover:-translate-y-1 hover:shadow-gray-400/50 active:translate-y-0">
-          Start Face Scan
+        <button className="group relative mt-6 md:mt-10 flex h-14 md:h-16 w-64 items-center justify-center overflow-hidden rounded-full bg-black text-xs md:text-sm font-semibold uppercase tracking-widest text-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300 hover:w-72 hover:bg-zinc-900 hover:shadow-[0_8px_40px_rgb(0,0,0,0.4)]">
+          
+          {/* Shimmer Sweep Effect */}
+          <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-150%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(150%)]">
+            <div className="relative h-full w-10 bg-white/20" />
+          </div>
+          
+          {/* Text Label */}
+          <span className="transition-all duration-300 group-hover:-translate-x-3">
+            Start Face Scan
+          </span>
+          
+          {/* Sliding Icon */}
+          <ScanFace className="absolute right-6 h-5 w-5 translate-x-8 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"/>
+          
         </button>
 
       </div>
 
       {/* CANVAS CONTAINER */}
-      <div className="absolute bottom-0 left-0 h-full w-full pointer-events-none z-10">
-        <CrowdCanvas cols={7} rows={15} src="/images/peeps/all-peeps.png" />
+      <div className="absolute bottom-0 left-0 h-[45vh] sm:h-[50vh] md:h-[60vh] lg:h-[75vh] w-full pointer-events-none z-10">
+        <CrowdCanvas cols={7} rows={15} src="/images/peeps/all-peeps.png"/>
       </div>
 
     </section>

@@ -26,14 +26,14 @@ const CallToAction = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="w-full bg-black text-white py-32 px-4 flex items-center justify-center">
+    <section ref={sectionRef} className="w-full bg-white text-black py-32 px-4 flex items-center justify-center">
       <div ref={contentRef} className="text-center max-w-3xl">
         <h2 className="text-5xl md:text-7xl font-extrabold tracking-tighter mb-10">
           Ready to hear how you feel?
         </h2>
         <Link 
           to="/login"
-          className="inline-block bg-white text-black px-10 py-5 rounded-full text-lg font-bold tracking-wide transition-transform hover:scale-110"
+          className="inline-block bg-black text-white px-10 py-5 rounded-full text-lg font-bold tracking-wide transition-transform hover:scale-110"
         >
           Start Face Scan
         </Link>

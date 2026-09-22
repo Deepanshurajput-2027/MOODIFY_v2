@@ -13,3 +13,12 @@
 .animate-marquee:hover {
   animation-play-state: paused;
 }
+
+@keyframes marquee-vertical {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
+.animate-marquee-vertical {
+  animation: marquee-vertical 15s linear infinite;
+}
