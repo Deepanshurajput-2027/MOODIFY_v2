@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { cn } from "../../lib/utils";
 import { Mail, Lock, User, Loader2 } from 'lucide-react';
@@ -91,8 +92,9 @@ export function AuthForm({ onSuccess, onClose, initialMode = 'login', className 
         }, { withCredentials: true });
       }
 
-      dispatch(loginSuccess(response.data.user || { email: formData.email, name: formData.name }));
-      onSuccess?.({ email: formData.email });
+      const userPayload = response.data.user || response.data;
+      dispatch(loginSuccess(userPayload));
+      onSuccess?.(userPayload);
     } catch (error) {
       setErrors({ general: error.response?.data?.message || 'Authentication failed. Please try again.' });
     } finally {
@@ -124,6 +126,18 @@ export function AuthForm({ onSuccess, onClose, initialMode = 'login', className 
           </div>
           {authMode === 'signup' && <PasswordStrengthIndicator password={formData.password}/>}
         </div>
+
+        {authMode === 'login' && (
+          <div className="flex justify-end">
+            <Link
+              to="/forgot-password"
+              className="text-xs font-semibold text-gray-600 hover:text-black hover:underline transition-colors"
+            >
+              Forgot Password?
+            </Link>
+          </div>
+        )}
+
         <button type="submit" disabled={isLoading} className="w-full relative bg-black text-white font-medium py-3 px-6 rounded-xl hover:opacity-90 transition-all disabled:opacity-50">
           {isLoading ? <Loader2 className="h-5 w-5 animate-spin mx-auto"/> : (authMode === 'login' ? 'Sign In' : 'Create Account')}
         </button>

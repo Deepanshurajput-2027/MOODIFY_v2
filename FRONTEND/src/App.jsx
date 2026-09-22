@@ -8,6 +8,7 @@ import Preloader from './components/Preloader';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPasswordPage from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 function App() {
   const dispatch = useDispatch();
@@ -42,6 +43,7 @@ function App() {
           <Route path="/login" element={<Login/>} />
           <Route path="/register" element={<Register/>} />
           <Route path="/forgot-password" element={<ForgotPasswordPage/>} />
+          <Route path="/reset-password" element={<ResetPassword/>} />
         </Routes>
       </main>
     </BrowserRouter>
