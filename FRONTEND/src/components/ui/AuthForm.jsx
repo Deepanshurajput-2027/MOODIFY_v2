@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { cn } from "../../lib/utils";
-import { Mail, Lock, User, Loader2 } from 'lucide-react';
+import { Mail, Lock, User, Loader2, CheckCircle2, AlertCircle, ArrowRight } from 'lucide-react';
 import { loginSuccess } from '../../store/authSlice';
 
 const calculatePasswordStrength = (password) => {
@@ -43,10 +43,11 @@ const PasswordStrengthIndicator = ({ password }) => {
 export function AuthForm({ onSuccess, onClose, initialMode = 'login', className }) {
   const dispatch = useDispatch();
   const [authMode, setAuthMode] = useState(initialMode);
-  const [registrationStep, setRegistrationStep] = useState('details');
+  const [registrationSuccess, setRegistrationSuccess] = useState('');
+  const [registeredEmail, setRegisteredEmail] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '', phone: '', agreeToTerms: false, rememberMe: false, verificationCode: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const [errors, setErrors] = useState({});
 
   const validateField = useCallback((field, value) => {
@@ -57,7 +58,7 @@ export function AuthForm({ onSuccess, onClose, initialMode = 'login', className 
       case 'password': if (!value) error = 'Password is required'; else if (typeof value === 'string' && value.length < 8) error = 'Password must be at least 8 characters'; break;
     }
     return error;
-  }, [formData.password, authMode, registrationStep]);
+  }, [authMode]);
 
   const handleInputChange = useCallback((field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -70,31 +71,44 @@ export function AuthForm({ onSuccess, onClose, initialMode = 'login', className 
     fieldsToValidate.forEach(field => { const error = validateField(field, formData[field]); if (error) newErrors[field] = error; });
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [authMode, registrationStep, formData, validateField]);
+  }, [authMode, formData, validateField]);
+
+  const handleModeSwitch = (mode) => {
+    setAuthMode(mode);
+    setErrors({});
+    setRegistrationSuccess('');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    setIsLoading(true); setErrors({});
+    setIsLoading(true);
+    setErrors({});
+    setRegistrationSuccess('');
     
     try {
-      let response;
       if (authMode === 'login') {
-        response = await axios.post('http://localhost:5000/api/auth/login', {
+        const response = await axios.post('http://localhost:5000/api/auth/login', {
           email: formData.email,
           password: formData.password
         }, { withCredentials: true });
+
+        const userPayload = response.data.user || response.data;
+        dispatch(loginSuccess(userPayload));
+        onSuccess?.(userPayload);
       } else {
-        response = await axios.post('http://localhost:5000/api/auth/register', {
+        const response = await axios.post('http://localhost:5000/api/auth/register', {
           username: formData.name,
           email: formData.email,
           password: formData.password
         }, { withCredentials: true });
-      }
 
-      const userPayload = response.data.user || response.data;
-      dispatch(loginSuccess(userPayload));
-      onSuccess?.(userPayload);
+        setRegisteredEmail(formData.email);
+        setRegistrationSuccess(
+          response.data.message ||
+          'Registration successful! Please check your email to verify your account before logging in.'
+        );
+      }
     } catch (error) {
       setErrors({ general: error.response?.data?.message || 'Authentication failed. Please try again.' });
     } finally {
@@ -103,6 +117,33 @@ export function AuthForm({ onSuccess, onClose, initialMode = 'login', className 
   };
 
   const renderAuthContent = () => {
+    if (registrationSuccess) {
+      return (
+        <div className="text-center py-4 space-y-4 animate-in fade-in zoom-in-95 duration-200">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 shadow-sm">
+            <Mail className="h-7 w-7" />
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-lg font-bold text-gray-900">Verify Your Email</h3>
+            <p className="text-sm text-gray-600 leading-relaxed max-w-sm mx-auto">
+              We sent a verification link to <span className="font-semibold text-gray-900">{registeredEmail}</span>.
+              Please check your inbox and click the link to activate your account.
+            </p>
+          </div>
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => handleModeSwitch('login')}
+              className="w-full inline-flex items-center justify-center gap-2 bg-black text-white font-medium py-3 px-6 rounded-xl hover:opacity-90 transition-all shadow-md"
+            >
+              <span>Go to Sign In</span>
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="space-y-4">
         {authMode === 'signup' && (
@@ -138,7 +179,7 @@ export function AuthForm({ onSuccess, onClose, initialMode = 'login', className 
           </div>
         )}
 
-        <button type="submit" disabled={isLoading} className="w-full relative bg-black text-white font-medium py-3 px-6 rounded-xl hover:opacity-90 transition-all disabled:opacity-50">
+        <button type="submit" disabled={isLoading} className="w-full relative bg-black text-white font-medium py-3 px-6 rounded-xl hover:opacity-90 transition-all disabled:opacity-50 shadow-md">
           {isLoading ? <Loader2 className="h-5 w-5 animate-spin mx-auto"/> : (authMode === 'login' ? 'Sign In' : 'Create Account')}
         </button>
       </div>
@@ -147,16 +188,28 @@ export function AuthForm({ onSuccess, onClose, initialMode = 'login', className 
 
   return (
     <div className={cn("p-6", className)}>
-      {errors.general && <div className="mb-4 p-3 bg-red-100 text-red-600 text-sm rounded-xl">{errors.general}</div>}
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold mb-2 text-gray-900">{authMode === 'login' ? 'Welcome Back' : 'Create Account'}</h2>
-      </div>
-      {authMode !== 'reset' && (
-        <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
-          <button onClick={() => setAuthMode('login')} className={cn("flex-1 py-2 px-4 rounded-lg text-sm transition-all", authMode === 'login' ? "bg-white shadow-sm font-medium text-black" : "text-gray-500")} type="button">Login</button>
-          <button onClick={() => setAuthMode('signup')} className={cn("flex-1 py-2 px-4 rounded-lg text-sm transition-all", authMode === 'signup' ? "bg-white shadow-sm font-medium text-black" : "text-gray-500")} type="button">Sign Up</button>
+      {errors.general && (
+        <div className="mb-4 p-3.5 bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl flex items-start gap-2.5">
+          <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
+          <span className="font-medium">{errors.general}</span>
         </div>
       )}
+      
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold mb-2 text-gray-900">
+          {registrationSuccess
+            ? 'Check Your Inbox'
+            : (authMode === 'login' ? 'Welcome Back' : 'Create Account')}
+        </h2>
+      </div>
+
+      {!registrationSuccess && (
+        <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
+          <button onClick={() => handleModeSwitch('login')} className={cn("flex-1 py-2 px-4 rounded-lg text-sm transition-all", authMode === 'login' ? "bg-white shadow-sm font-medium text-black" : "text-gray-500")} type="button">Login</button>
+          <button onClick={() => handleModeSwitch('signup')} className={cn("flex-1 py-2 px-4 rounded-lg text-sm transition-all", authMode === 'signup' ? "bg-white shadow-sm font-medium text-black" : "text-gray-500")} type="button">Sign Up</button>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit}>{renderAuthContent()}</form>
     </div>
   );
