@@ -20,6 +20,13 @@ const userSchema = new mongoose.Schema(
       required: true,
       select: false,
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+    },
     profile: {
       displayName: {
         type: String,
@@ -38,6 +45,12 @@ const userSchema = new mongoose.Schema(
       spotifyId: {
         type: String,
       },
+    },
+    resetPasswordToken: {
+      type: String,
+    },
+    resetPasswordExpire: {
+      type: Date,
     },
   },
   {

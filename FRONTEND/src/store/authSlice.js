@@ -10,6 +10,15 @@ export const checkAuth = createAsyncThunk('auth/checkAuth', async (_, { rejectWi
   }
 });
 
+export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, { rejectWithValue }) => {
+  try {
+    const response = await axios.post('http://localhost:5000/api/auth/logout', {}, { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    return rejectWithValue(error.response?.data?.message || 'Logout failed');
+  }
+});
+
 const initialState = {
   user: null,
   isAuthenticated: false,
@@ -31,6 +40,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // checkAuth
       .addCase(checkAuth.pending, (state) => {
         state.isCheckingAuth = true;
       })
@@ -43,6 +53,15 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
         state.isCheckingAuth = false;
+      })
+      // logoutUser
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.user = null;
+        state.isAuthenticated = false;
+      })
+      .addCase(logoutUser.rejected, (state) => {
+        state.user = null;
+        state.isAuthenticated = false;
       });
   }
 });
