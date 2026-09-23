@@ -7,20 +7,24 @@ import AIChatShowcase from '../components/landing/AIChatShowcase';
 import SpiralGallerySection from '../components/landing/SpiralGallerySection';
 import CallToAction from '../components/landing/CallToAction';
 import Footer from '../components/landing/Footer';
+import SmoothScroll from '../components/SmoothScroll';
 
 const Home = () => {
   return (
-    <div className="w-full bg-white overflow-x-hidden">
-      <Hero/>
-      <TrustBar/>
-      <ProblemSolution/>
-      <HowItWorks/>
-      <AIChatShowcase/>
-      <SpiralGallerySection/>
-      <CallToAction/>
-      <Footer/>
-    </div>
+    <SmoothScroll>
+      <div className="w-full bg-white overflow-x-hidden">
+        <Hero/>
+        <TrustBar/>
+        <ProblemSolution/>
+        <HowItWorks/>
+        <AIChatShowcase/>
+        <SpiralGallerySection/>
+        <CallToAction/>
+        <Footer/>
+      </div>
+    </SmoothScroll>
   );
 };
 
 export default Home;
+
