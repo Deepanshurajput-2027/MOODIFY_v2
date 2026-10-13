@@ -10,6 +10,10 @@ import Register from './pages/Register';
 import ForgotPasswordPage from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import VerifyEmail from './pages/VerifyEmail';
+import Dashboard from './pages/Dashboard';
+import DashboardScan from './pages/DashboardScan';
+import MusicHub from './pages/MusicHub';
+import NotFound from './pages/NotFound';
 
 function App() {
   const dispatch = useDispatch();
@@ -37,7 +41,7 @@ function App() {
         </div>
       )}
       
-      <main className="relative min-h-screen w-full bg-white">
+      <main className="relative min-h-screen w-full">
         <Navbar/>
         <Routes>
           <Route path="/" element={<Home/>} />
@@ -46,6 +50,10 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPasswordPage/>} />
           <Route path="/reset-password" element={<ResetPassword/>} />
           <Route path="/verify-email" element={<VerifyEmail/>} />
+          <Route path="/dashboard" element={<Dashboard/>} />
+          <Route path="/dashboard/scan" element={<DashboardScan/>} />
+          <Route path="/dashboard/player" element={<MusicHub/>} />
+          <Route path="*" element={<NotFound/>} />
         </Routes>
       </main>
     </BrowserRouter>

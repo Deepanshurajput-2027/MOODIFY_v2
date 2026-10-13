@@ -53,16 +53,19 @@ export const register = async (req, res) => {
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
     const verifyUrl = `${frontendUrl}/verify-email?token=${verificationToken}`;
 
-    const transporter = nodemailer.createTransport({
+    const transportConfig = {
       service: process.env.EMAIL_SERVICE || 'gmail',
-      host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT ? Number(process.env.EMAIL_PORT) : 587,
-      secure: process.env.EMAIL_SECURE === 'true',
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
-    });
+    };
+    // Only override host/port/secure if explicitly provided (otherwise let `service` handle it)
+    if (process.env.EMAIL_HOST) transportConfig.host = process.env.EMAIL_HOST;
+    if (process.env.EMAIL_PORT) transportConfig.port = Number(process.env.EMAIL_PORT);
+    if (process.env.EMAIL_SECURE) transportConfig.secure = process.env.EMAIL_SECURE === 'true';
+
+    const transporter = nodemailer.createTransport(transportConfig);
 
     const mailOptions = {
       from: process.env.EMAIL_FROM || `"Moodify Support" <${process.env.EMAIL_USER || 'no-reply@moodify.app'}>`,
@@ -212,16 +215,18 @@ export const forgotPassword = async (req, res) => {
       const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
 
       // Configure nodemailer transporter
-      const transporter = nodemailer.createTransport({
+      const transportConfig = {
         service: process.env.EMAIL_SERVICE || 'gmail',
-        host: process.env.EMAIL_HOST,
-        port: process.env.EMAIL_PORT ? Number(process.env.EMAIL_PORT) : 587,
-        secure: process.env.EMAIL_SECURE === 'true',
         auth: {
           user: process.env.EMAIL_USER,
           pass: process.env.EMAIL_PASS,
         },
-      });
+      };
+      if (process.env.EMAIL_HOST) transportConfig.host = process.env.EMAIL_HOST;
+      if (process.env.EMAIL_PORT) transportConfig.port = Number(process.env.EMAIL_PORT);
+      if (process.env.EMAIL_SECURE) transportConfig.secure = process.env.EMAIL_SECURE === 'true';
+
+      const transporter = nodemailer.createTransport(transportConfig);
 
       const mailOptions = {
         from: process.env.EMAIL_FROM || `"Moodify Support" <${process.env.EMAIL_USER || 'no-reply@moodify.app'}>`,

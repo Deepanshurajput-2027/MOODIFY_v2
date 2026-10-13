@@ -49,8 +49,8 @@ const Preloader = ({ onComplete }) => {
 
     // 2. Images pop in with stagger and random organic tilts
     tl.to(imagesRef.current, {
-      x: (i) => getCoords(i, 160).x,
-      y: (i) => getCoords(i, 160).y,
+      x: (i) => getCoords(i, 250).x,
+      y: (i) => getCoords(i, 250).y,
       scale: 1,
       opacity: 1,
       rotation: () => gsap.utils.random(-15, 15),
@@ -117,7 +117,7 @@ const Preloader = ({ onComplete }) => {
           <div
             key={i}
             ref={el => imagesRef.current[i] = el}
-            className={`absolute -ml-8 -mt-8 ${i % 3 === 0 ? 'w-14 h-16' : 'w-16 h-16'} bg-white p-1 rounded-sm shadow-2xl`}
+            className={`absolute -ml-8 -mt-8 ${i % 3 === 0 ? 'w-14 h-16' : 'w-16 h-16'}  p-1 shadow-2xl`}
           >
             <img src={src} alt="Mood" className="w-full h-full object-cover grayscale opacity-90" />
           </div>
